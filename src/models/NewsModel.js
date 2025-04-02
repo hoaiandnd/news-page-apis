@@ -1,12 +1,21 @@
-import { ResultModel } from './providers'
+const { ResultModel } = require('./providers')
 
-export class NewsModel extends ResultModel {
+class NewsModel extends ResultModel {
   constructor() {
     super()
   }
   async getAllNews() {
-    return this.queryResult({
-      sql: 'SELECT * FROM news'
+    return this.queryResult('SELECT * FROM news')
+  }
+  /**
+   * @param {string | number} id
+   */
+  async getNewById(id) {
+    return this.executeResult({
+      sql: 'SELECT * FROM news WHERE id = ?',
+      params: [id]
     })
   }
 }
+
+module.exports = NewsModel

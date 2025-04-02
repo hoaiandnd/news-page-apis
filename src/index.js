@@ -1,11 +1,11 @@
-import express from 'express'
-import { configServer } from './configs'
-const PORT = 3000
+const express = require('express')
+const { server } = require('./configs')
+const { env } = require('./utils')
 const app = express()
 
-configServer(app)
+server.config(app)
 
-app.listen(PORT, () => {
+app.listen(env.appPort, () => {
   // eslint-disable-next-line no-console
   console.log('App is listening on port', PORT)
 })

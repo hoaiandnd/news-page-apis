@@ -1,9 +1,11 @@
-import { rootRouter } from '../routes'
+const { rootRouter } = require('../routes')
 
 /**
  *
  * @param {Express} app - Express app instance
  */
-export const configServer = app => {
+const config = app => {
   app.use('/api', rootRouter)
 }
+
+module.exports = { config }

@@ -1,2 +1,7 @@
-export * from './database.config'
-export * from './server.config'
+const database = require('./database.config')
+const server = require('./server.config')
+
+module.exports = {
+  database,
+  server
+}

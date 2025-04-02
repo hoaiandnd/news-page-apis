@@ -1,13 +1,15 @@
-import { connectToDb } from '../../configs'
+const { database } = require('../../configs')
 
-export class Database {
+class Database {
   constructor() {
     this.connection = null
   }
   connect() {
     if (!this.connection) {
-      this.connection = connectToDb()
+      this.connection = database.connect()
     }
     return this.connection
   }
 }
+
+module.exports = Database

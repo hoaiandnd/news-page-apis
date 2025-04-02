@@ -1,5 +1,7 @@
-import express from 'express'
+const express = require('express')
 
-export const createRouter = () => {
+const createRouter = () => {
   return express.Router()
 }
+
+module.exports = { createRouter }

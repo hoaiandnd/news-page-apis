@@ -1,5 +1,11 @@
-import { createRouter } from '../utils'
+const { route } = require('../utils')
+const { NewsController } = require('../controllers')
+const { NewsModel } = require('../models')
 
-const newRouter = createRouter()
+const newRouter = route.createRouter()
+const newsController = new NewsController(new NewsModel())
 
-export { newRouter }
+newRouter.get('/', newsController.getAllNews)
+newRouter.get('/:id', newsController.getNewById)
+
+module.exports = newRouter

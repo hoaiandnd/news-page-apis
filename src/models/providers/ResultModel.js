@@ -1,6 +1,6 @@
-import { Model } from './Model'
+const Model = require('./Model')
 
-export class ResultModel extends Model {
+class ResultModel extends Model {
   constructor() {
     super()
   }
@@ -19,3 +19,5 @@ export class ResultModel extends Model {
     return this.execute(sqlOptions).then(([result]) => result)
   }
 }
+
+module.exports = ResultModel

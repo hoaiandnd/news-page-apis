@@ -1,7 +1,9 @@
-import { database } from '../utils/env.util'
-import mysql from 'mysql2/promise'
+const { database } = require('../utils')
+const mysql = require('mysql2/promise')
 
-export const connectToDb = () => {
+const connect = () => {
   const connection = mysql.createPool({ ...database, waitForConnections: true, connectionLimit: 10 })
   return connection
 }
+
+module.exports = { connect }

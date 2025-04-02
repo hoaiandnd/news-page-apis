@@ -1,10 +1,10 @@
-import { createRouter } from '../utils'
-import { newRouter } from './news.route'
-import { userRouter } from './user.route'
+const { route } = require('../utils')
+const newRouter = require('./news.route')
+const userRouter = require('./user.route')
 
-const rootRouter = createRouter()
+const rootRouter = route.createRouter()
 
 rootRouter.use('/news', newRouter)
 rootRouter.use('/user', userRouter)
 
-export { rootRouter }
+module.exports = rootRouter

@@ -1,6 +1,6 @@
-import { Database } from './Database'
+const Database = require('./Database')
 
-export class Model extends Database {
+class Model extends Database {
   constructor() {
     super()
   }
@@ -13,7 +13,7 @@ export class Model extends Database {
     return connection.query(sql)
   }
   /**
-   * 
+   *
    * @param {{sql: string; values?: any[]}} sqlOptions
    */
   execute(sqlOptions) {
@@ -21,3 +21,5 @@ export class Model extends Database {
     return connection.execute(sqlOptions.sql, sqlOptions.values)
   }
 }
+
+module.exports = Model

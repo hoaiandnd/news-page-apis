@@ -1,5 +1,5 @@
-import { createRouter } from '../utils'
+const { route } = require('../utils')
 
-const userRouter = createRouter()
+const userRouter = route.createRouter()
 
-export { userRouter }
+module.exports = userRouter
