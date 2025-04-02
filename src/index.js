@@ -1,10 +1,9 @@
 import express from 'express'
+import { configServer } from './configs'
 const PORT = 3000
 const app = express()
 
-app.get('/', (req, res) => {
-  res.send('Hello, World!')
-})
+configServer(app)
 
 app.listen(PORT, () => {
   console.log('App is listening on port', PORT)
