@@ -1,3 +1,5 @@
+import { Model } from './Model'
+
 export class ResultModel extends Model {
   constructor() {
     super()
