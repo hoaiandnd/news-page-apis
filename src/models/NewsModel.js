@@ -5,7 +5,7 @@ export class NewsModel extends ResultModel {
     super()
   }
   async getAllNews() {
-    return this.executeResult({
+    return this.queryResult({
       sql: 'SELECT * FROM news'
     })
   }

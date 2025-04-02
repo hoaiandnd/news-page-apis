@@ -9,15 +9,15 @@ export class Model extends Database {
    * @param {string} sql
    */
   async query(sql) {
-    const connection = await this.connect()
+    const connection = this.connect()
     return connection.query(sql)
   }
   /**
    * 
    * @param {{sql: string; values?: any[]}} sqlOptions
    */
-  async execute(sqlOptions) {
-    const connection = await this.connect()
+  execute(sqlOptions) {
+    const connection = this.connect()
     return connection.execute(sqlOptions.sql, sqlOptions.values)
   }
 }

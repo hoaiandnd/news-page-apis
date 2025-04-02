@@ -4,9 +4,9 @@ export class Database {
   constructor() {
     this.connection = null
   }
-  async connect() {
+  connect() {
     if (!this.connection) {
-      this.connection = await connectToDb()
+      this.connection = connectToDb()
     }
     return this.connection
   }
