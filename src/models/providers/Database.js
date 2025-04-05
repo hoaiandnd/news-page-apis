@@ -1,13 +1,11 @@
-const { database } = require('../../configs')
+const database = require('../../configs/database.config')
 
 class Database {
   constructor() {
     this.connection = null
   }
   connect() {
-    if (!this.connection) {
-      this.connection = database.connect()
-    }
+    this.connection ??= database.connect()
     return this.connection
   }
 }

@@ -1,8 +1,8 @@
-const { database } = require('../utils')
+const { databaseEnv } = require('../utils')
 const mysql = require('mysql2/promise')
 
 const connect = () => {
-  const connection = mysql.createPool({ ...database, waitForConnections: true, connectionLimit: 10 })
+  const connection = mysql.createPool({ ...databaseEnv, waitForConnections: true, connectionLimit: 10 })
   return connection
 }
 

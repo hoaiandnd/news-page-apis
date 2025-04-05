@@ -1,5 +1,8 @@
-class NewsController {
+const ControllerBase = require('./ControllerBase')
+
+class NewsController extends ControllerBase {
   constructor(newsService) {
+    super()
     this.newsService = newsService
   }
   // GET /news
@@ -10,6 +13,10 @@ class NewsController {
     } catch (error) {
       next(error)
     }
+    // return this.createAction(async ({ res }) => {
+    //   const news = await this.newsService.getAllNews()
+    //   res.status(200).json(news)
+    // })
   }
   // GET /news/:id
   async getNewById(req, res, next) {
@@ -21,6 +28,13 @@ class NewsController {
       next(error)
     }
   }
+  // createNews() {
+  //   this.createAction(async ({ req }) => {
+  //     const { title, content } = req.body
+  //     const createdNew = await this.newsService.createNews(title, content)
+  //     res.status(201).json(createdNew)
+  //   })
+  // }
 }
 
 module.exports = NewsController

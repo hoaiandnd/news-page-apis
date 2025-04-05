@@ -1,6 +1,6 @@
 require('dotenv').config()
 
-const database = {
+const databaseEnv = {
   host: process.env.DB_HOST || 'localhost',
   user: process.env.DB_USER || 'root',
   password: process.env.DB_PASSWORD || '',
@@ -10,4 +10,4 @@ const database = {
 
 const appPort = process.env.APP_PORT || 3000
 
-module.exports = { database, appPort }
+module.exports = { databaseEnv, appPort }
