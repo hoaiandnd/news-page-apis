@@ -1,8 +1,11 @@
 const route = require('../utils/route.util')
-const { newsController } = require('../controllers/NewsController')
-const newRouter = route.createRouter()
+const NewsController = require('../controllers/NewsController')
+const { fromAction } = require('../utils/controller.util')
 
-newRouter.get('/', newsController.getAllNews())
-newRouter.get('/:id', newsController.getNewById)
+const newRouter = route.createRouter()
+const newsController = new NewsController()
+
+newRouter.get('/', fromAction(newsController.getAllNews))
+newRouter.get('/:id', fromAction(newsController.getNewsById))
 
 module.exports = newRouter

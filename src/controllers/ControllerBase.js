@@ -2,7 +2,7 @@ class ControllerBase {
   /**
    * @param {(httpContext: {req: any; res: any; next: any}) => Promise<any>} callback
    */
-  createAction(callback) {
+  action(callback) {
     return async function (req, res, next) {
       try {
         await callback({ req, res, next })
