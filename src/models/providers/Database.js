@@ -1,11 +1,11 @@
-const database = require('../../configs/database.config')
+const dbContext = require('../../configs/database.config')
 
 class Database {
   constructor() {
     this.connection = null
   }
   connect() {
-    this.connection ??= database.connect()
+    this.connection ??= dbContext.connect()
     return this.connection
   }
 }

@@ -5,5 +5,5 @@ const connect = () => {
   const connection = mysql.createPool({ ...databaseEnv, waitForConnections: true, connectionLimit: 10 })
   return connection
 }
-
-module.exports = { connect }
+const dbContext = { connect }
+module.exports = dbContext

@@ -7,5 +7,5 @@ const { rootRouter } = require('../routes')
 const config = app => {
   app.use('/api', rootRouter)
 }
-
-module.exports = { config }
+const server = { config }
+module.exports = server

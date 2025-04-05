@@ -1,4 +1,5 @@
 const ControllerBase = require('./ControllerBase')
+const NewsModel = require('../models/NewsModel')
 
 class NewsController extends ControllerBase {
   constructor(newsService) {
@@ -36,5 +37,6 @@ class NewsController extends ControllerBase {
   //   })
   // }
 }
-
-module.exports = NewsController
+const newsService = new NewsModel()
+module.exports.newsController = new NewsController(newsService)
+module.exports.NewsController = NewsController

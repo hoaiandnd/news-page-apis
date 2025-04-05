@@ -1,4 +1,4 @@
-const { ResultModel } = require('./providers')
+const ResultModel = require('./providers/ResultModel')
 
 class NewsModel extends ResultModel {
   constructor() {

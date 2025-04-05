@@ -1,10 +1,6 @@
-const { route } = require('../utils')
-const { NewsController } = require('../controllers')
-const { NewsModel } = require('../models')
-
+const { route } = require('../utils/route.util')
+const { newsController } = require('../controllers/NewsController')
 const newRouter = route.createRouter()
-const newsService = new NewsModel()
-const newsController = new NewsController(newsService)
 
 newRouter.get('/', newsController.getAllNews)
 newRouter.get('/:id', newsController.getNewById)
