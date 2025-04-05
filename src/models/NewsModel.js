@@ -6,7 +6,7 @@ class NewsModel extends ResultModel {
     this.connect()
   }
   getAllNews() {
-    return this.queryResult('SELECT * FROM users')
+    return this.queryResult('SELECT * FROM news')
   }
   /**
    * @param {string | number} id
