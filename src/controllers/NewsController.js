@@ -7,17 +7,17 @@ class NewsController extends ControllerBase {
     this.newsService = newsService
   }
   // GET /news
-  async getAllNews(_req, res, next) {
-    try {
-      const news = await this.newsService.getAllNews()
-      res.status(200).json(news)
-    } catch (error) {
-      next(error)
-    }
-    // return this.createAction(async ({ res }) => {
+  getAllNews() {
+    // try {
     //   const news = await this.newsService.getAllNews()
     //   res.status(200).json(news)
-    // })
+    // } catch (error) {
+    //   next(error)
+    // }
+    return this.createAction(async ({ res }) => {
+      const news = await this.newsService.getAllNews()
+      res.status(200).json(news)
+    })
   }
   // GET /news/:id
   async getNewById(req, res, next) {
@@ -38,5 +38,5 @@ class NewsController extends ControllerBase {
   // }
 }
 const newsService = new NewsModel()
-module.exports.newsController = new NewsController(newsService)
-module.exports.NewsController = NewsController
+const newsController = new NewsController(newsService)
+module.exports = { newsController, NewsController }

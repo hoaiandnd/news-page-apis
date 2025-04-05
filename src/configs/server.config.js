@@ -1,4 +1,4 @@
-const { rootRouter } = require('../routes')
+const rootRouter = require('../routes/root.route')
 
 /**
  *

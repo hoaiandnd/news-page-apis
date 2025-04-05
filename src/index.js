@@ -1,6 +1,6 @@
 const express = require('express')
-const { server } = require('./configs')
-const { env } = require('./utils')
+const server = require('./configs/server.config')
+const env = require('./utils/env.util')
 const PORT = env.appPort
 const app = express()
 

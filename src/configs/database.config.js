@@ -1,4 +1,4 @@
-const { databaseEnv } = require('../utils')
+const { databaseEnv } = require('../utils/env.util')
 const mysql = require('mysql2/promise')
 
 const connect = () => {

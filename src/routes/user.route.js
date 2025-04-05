@@ -1,4 +1,4 @@
-const { route } = require('../utils/route.util')
+const route = require('../utils/route.util')
 
 const userRouter = route.createRouter()
 
