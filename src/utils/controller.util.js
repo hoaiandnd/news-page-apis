@@ -10,4 +10,34 @@ const fromAction = action => {
     }
   }
 }
-module.exports = { fromAction }
+
+/**
+ *
+ * @param {*} res Response object
+ * @param {{ message?: string; data?: any; status?: number }} json
+ */
+const ok = (res, json) => {
+  const { message = 'OK', data = null, status = 200 } = json
+  res.status(status).json({ message, data })
+}
+/**
+ *
+ * @param {*} res Response object
+ * @param {{ message?: string; data?: any; status?: number }} json
+ */
+const error = (res, json) => {
+  const { message = 'INTERNAL_SERVER_ERROR', data = null, status = 500 } = json
+  res.status(status).json({ message, data })
+}
+
+/**
+ *
+ * @param {*} res Response object
+ * @param {{ message?: string; data?: any; status?: number }} json
+ */
+const badRequest = (res, json) => {
+  const { message = 'BAD_REQUEST', data = null, status = 400 } = json
+  res.status(status).json({ message, data })
+}
+
+module.exports = { fromAction, success: ok, error, badRequest }
