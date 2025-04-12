@@ -1,4 +1,5 @@
 const { message } = require('../constants/response.const')
+const { isNumber } = require('../utils/validation')
 
 class NewsController {
   // GET /news
@@ -17,7 +18,12 @@ class NewsController {
         message: message.fail.requiredParamsMissing
       })
     }
-    const foundNews = await service.getNewById(+id)
+    if (isNumber(id)) {
+      res.badRequest({
+        message: message.fail.invalidParamType
+      })
+    }
+    const foundNews = await service.getNewById(id)
     res.ok({
       message: message.success.fetch,
       data: foundNews
