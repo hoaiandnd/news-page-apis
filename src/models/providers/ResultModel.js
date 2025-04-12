@@ -16,14 +16,14 @@ class ResultModel extends Model {
   }
   /**
    *
-   * @param {{sql: string; values?: any[]}} sqlOptions
+   * @param {{sql: string; params?: any[]}} sqlOptions
    */
   async executeResult(sqlOptions) {
     return this.execute(sqlOptions).then(([result]) => result)
   }
   /**
    *
-   * @param {{sql: string; values?: any[]}} sqlOptions
+   * @param {{sql: string; params?: any[]}} sqlOptions
    */
   async executeOne(sqlOptions) {
     return this.execute(sqlOptions).then(([result]) => result?.[0])

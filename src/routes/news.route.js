@@ -7,7 +7,7 @@ const { ParseIntParameterValidation } = require('../middlewares/validation.middl
 const newRouter = route.createRouter()
 const controller = new InjectableController(new NewsController(), new NewsModel())
 
-newRouter.get('/', controller.fromAction('getAllNews'))
+newRouter.get('/', controller.fromAction('getNewsList'))
 newRouter.get('/:id', ParseIntParameterValidation.validate(['id']), controller.fromAction('getNewsById'))
 
 module.exports = newRouter

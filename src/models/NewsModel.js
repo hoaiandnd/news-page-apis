@@ -5,8 +5,15 @@ class NewsModel extends ResultModel {
     super()
     this.connect()
   }
-  getAllNews() {
-    return this.queryResult('SELECT * FROM users')
+  /**
+   *
+   * @param {{limit?: number | string; offset?: number | string}} paginationOptions
+   * @returns
+   */
+  getNewsList({ limit = 0, offset }) {
+    const newsSelectSql = 'SELECT * FROM users'
+    const paginationSql = +limit > 0 ? `${newsSelectSql} LIMIT ? OFFSET ?` : newsSelectSql
+    return this.executeResult({ sql: paginationSql, params: [limit + '', offset + '' || '0'] })
   }
   /**
    * @param {string | number} id
