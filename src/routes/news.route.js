@@ -1,11 +1,12 @@
 const route = require('../utils/route.util')
 const NewsController = require('../controllers/NewsController')
-const { fromAction } = require('../utils/controller.util')
+const InjectableController = require('../controllers/providers/InjectableController')
+const NewsModel = require('../models/NewsModel')
 
 const newRouter = route.createRouter()
-const newsController = new NewsController()
+const controller = new InjectableController(new NewsController(), new NewsModel())
 
-newRouter.get('/', fromAction(newsController.getAllNews))
-newRouter.get('/:id', fromAction(newsController.getNewsById))
+newRouter.get('/', controller.fromAction('getAllNews'))
+newRouter.get('/:id', controller.fromAction('getNewsById'))
 
 module.exports = newRouter
