@@ -17,7 +17,7 @@ class NewsController {
         message: message.fail.requiredParamsMissing
       })
     }
-    const foundNews = await service.getNewById(id)
+    const foundNews = await service.getNewById(+id)
     res.ok({
       message: message.success.fetch,
       data: foundNews

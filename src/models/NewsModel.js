@@ -12,8 +12,8 @@ class NewsModel extends ResultModel {
    * @param {string | number} id
    */
   getNewById(id) {
-    return this.executeResult({
-      sql: 'SELECT * FROM news WHERE id = ?',
+    return this.executeOne({
+      sql: 'SELECT * FROM users WHERE id = ?',
       params: [id]
     })
   }

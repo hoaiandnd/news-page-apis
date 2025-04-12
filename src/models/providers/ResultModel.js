@@ -8,8 +8,11 @@ class ResultModel extends Model {
    *
    * @param {string} sql
    */
-  async queryResult(sql) {
+  queryResult(sql) {
     return this.query(sql).then(([row]) => row)
+  }
+  async queryOne(sql) {
+    return this.query(sql).then(([row]) => row?.[0])
   }
   /**
    *
@@ -17,6 +20,13 @@ class ResultModel extends Model {
    */
   async executeResult(sqlOptions) {
     return this.execute(sqlOptions).then(([result]) => result)
+  }
+  /**
+   *
+   * @param {{sql: string; values?: any[]}} sqlOptions
+   */
+  async executeOne(sqlOptions) {
+    return this.execute(sqlOptions).then(([result]) => result?.[0])
   }
 }
 
