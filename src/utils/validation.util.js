@@ -1,5 +1,4 @@
 /**
- *
  * @param {string} str
  */
 const isNumber = str => {

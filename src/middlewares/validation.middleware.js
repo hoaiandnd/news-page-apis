@@ -12,33 +12,23 @@ class ParameterValidation {
      */
     const { validationFn = () => false, errorFn, errorMessage } = validationOptions
     return function (req, res, next) {
-      for (let i = 0; i < paramNames.length; i++) {
-        const paramName = paramNames[i]
-        const data = req.params[paramName]
-        if (!validationFn?.(data)) {
-          let errorMsg = message.fail.parameterError
-          if (errorMessage) {
-            errorMsg = typeof errorMessage === 'string' ? errorMessage : errorMessage(paramName, data)
-          }
-          errorFn?.({ data, paramName, res }) ?? res.status(500).json({ message: errorMsg })
-          return
+      // find the first invalid route parameter
+      const invalidParamName = paramNames.find(paramName => {
+        const data = req.params?.[paramName]
+        return !validationFn?.(data)
+      })
+      if (invalidParamName) {
+        const data = req.params[invalidParamName]
+        let errorMsg = message.fail.parameterError
+        if (errorMessage) {
+          errorMsg = typeof errorMessage === 'string' ? errorMessage : errorMessage(invalidParamName, data)
         }
+        errorFn?.({ data, invalidParamName, res }) ??
+          res.status(500).json({ message: errorMsg, paramName: invalidParamName, data })
+        return
       }
       next()
     }
-  }
-}
-
-class RequiredParameterValidation {
-  /**
-   * @param {string} paramName
-   * @param {(data: string) => void} errorHandler
-   */
-  static validate(paramName, errorHandler) {
-    const defaultErrorHandler = ({ data, res }) => {
-      res.status(500).json({ message: `'${data}' is not a integer number`, paramName, data })
-    }
-    return ParameterValidation.validate(paramName, isNumber, errorHandler ?? defaultErrorHandler)
   }
 }
 
@@ -57,5 +47,24 @@ class ParseIntParameterValidation {
     })
   }
 }
+/**
+ * Check whether
+ */
+class EnumParameterValidation {
+  /**
+   * @param {string} paramName
+   * @param {string[]} values
+   * @param {(context: {data: string; paramName: string, res: any}) => void} errorHandler
+   */
+  static validate(paramName, values, errorHandler) {
+    const defaultErrorHandler = ({ data, paramName, res }) => {
+      res.status(500).json({ message: `'${data}' is not a valid value`, paramName, data })
+    }
+    return ParameterValidation.validate(paramName, {
+      validationFn: data => values.includes(data),
+      errorFn: errorHandler ?? defaultErrorHandler
+    })
+  }
+}
 
-module.exports = { ParameterValidation, ParseIntParameterValidation, RequiredParameterValidation }
+module.exports = { ParameterValidation, ParseIntParameterValidation, EnumParameterValidation }
