@@ -3,23 +3,28 @@ const { isNumber } = require('../utils/validation.util')
 
 class ParameterValidation {
   /**
-   * @param {string} paramName
+   * @param {string[]} paramNames
    * @param {{validationFn?: (data: string) => boolean; errorFn?: (context: {data: string; paramName: string, res: any}) => void; errorMessage?: string | (paramName: string, data: string) => string}} validationOptions
    */
-  static validate(paramName, validationOptions) {
+  static validate(paramNames, validationOptions) {
     /**
      * @param {function} next
      */
     const { validationFn = () => false, errorFn, errorMessage } = validationOptions
-    let errorMsg = message.fail.parameterError
     return function (req, res, next) {
-      const data = req.params[paramName]
-      if (!validationFn?.(data)) {
-        if (errorMessage) {
-          errorMsg = typeof errorMessage === 'string' ? errorMessage : errorMessage(paramName, data)
+      for (let i = 0; i < paramNames.length; i++) {
+        const paramName = paramNames[i]
+        const data = req.params[paramName]
+        if (!validationFn?.(data)) {
+          let errorMsg = message.fail.parameterError
+          if (errorMessage) {
+            errorMsg = typeof errorMessage === 'string' ? errorMessage : errorMessage(paramName, data)
+          }
+          errorFn?.({ data, paramName, res }) ?? res.status(500).json({ message: errorMsg })
+          return
         }
-        errorFn?.({ data, paramName, res }) ?? res.status(500).json({ message: errorMsg })
-      } else next()
+      }
+      next()
     }
   }
 }
@@ -39,14 +44,14 @@ class RequiredParameterValidation {
 
 class ParseIntParameterValidation {
   /**
-   * @param {string} paramName
+   * @param {string[]} paramNames
    * @param {(context: {data: string; paramName: string, res: any}) => void} errorHandler
    */
-  static validate(paramName, errorHandler) {
-    const defaultErrorHandler = ({ data, res }) => {
+  static validate(paramNames, errorHandler) {
+    const defaultErrorHandler = ({ data, paramName, res }) => {
       res.status(500).json({ message: `'${data}' is not a integer number`, paramName, data })
     }
-    return ParameterValidation.validate(paramName, {
+    return ParameterValidation.validate(paramNames, {
       validationFn: isNumber,
       errorFn: errorHandler ?? defaultErrorHandler
     })
