@@ -1,13 +1,12 @@
 const { message } = require('../constants/response.const')
 const NewsModel = require('../models/NewsModel')
-const { success, badRequest } = require('../utils/controller.util')
 const newsModel = new NewsModel()
 
 class NewsController {
   // GET /news
   async getAllNews({ res }) {
     const news = await newsModel.getAllNews()
-    success(res, {
+    res.ok({
       message: message.success.fetch,
       data: news
     })
@@ -16,12 +15,12 @@ class NewsController {
   async getNewsById({ req, res }) {
     const { id } = req.params
     if (!id) {
-      badRequest(res, {
+      res.badRequest({
         message: message.fail.requiredParamsMissing
       })
     }
     const foundNews = await newsModel.getNewById(id)
-    success(res, {
+    res.ok({
       message: message.success.fetch,
       data: foundNews
     })

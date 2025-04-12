@@ -1,23 +1,27 @@
+const { message: responseMessage } = require('../constants/response.const')
+
 /**
- * @param {(httpContext: {req: any; res: any; next: any}) => Promise<any>} action
+ * * Converts an action function to a middleware function.
+ * * Combine the `request`, `response`, and `next` parameters into a single object.
+ * * Inject `res.ok`, `res.internalError`, and `res.badRequest` methods into the response object.
+ * @param {(httpContext: {req: any; res: any; next: any}) => Promise<any>} action action function return a promise
+ * @returns {function} middleware function
  */
 const fromAction = action => {
   return async function (req, res, next) {
     try {
+      res = { ...res, ok, internalError: internalServerError, badRequest }
       await action({ req, res, next })
     } catch (error) {
       next(error)
     }
   }
 }
-
 /**
- *
- * @param {*} res Response object
  * @param {{ message?: string; data?: any; status?: number }} json
  */
-const ok = (res, json) => {
-  const { message = 'OK', data = null, status = 200 } = json
+const ok = json => {
+  const { message = responseMessage.success.oK, data = null, status = 200 } = json
   res.status(status).json({ message, data })
 }
 /**
@@ -25,8 +29,8 @@ const ok = (res, json) => {
  * @param {*} res Response object
  * @param {{ message?: string; data?: any; status?: number }} json
  */
-const error = (res, json) => {
-  const { message = 'INTERNAL_SERVER_ERROR', data = null, status = 500 } = json
+const internalServerError = (res, json) => {
+  const { message = responseMessage.fail.internalServerError, data = null, status = 500 } = json
   res.status(status).json({ message, data })
 }
 
@@ -36,8 +40,8 @@ const error = (res, json) => {
  * @param {{ message?: string; data?: any; status?: number }} json
  */
 const badRequest = (res, json) => {
-  const { message = 'BAD_REQUEST', data = null, status = 400 } = json
+  const { message = responseMessage.fail.badRequest, data = null, status = 400 } = json
   res.status(status).json({ message, data })
 }
 
-module.exports = { fromAction, success: ok, error, badRequest }
+module.exports = { fromAction }
