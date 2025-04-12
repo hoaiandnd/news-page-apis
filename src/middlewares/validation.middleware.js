@@ -3,6 +3,7 @@ const { isNumber } = require('../utils/validation.util')
 
 class ParameterValidation {
   /**
+   * Custom middleware function for validation
    * @param {string[]} paramNames
    * @param {{validationFn?: (data: string) => boolean; errorFn?: (context: {data: string; paramName: string, res: any}) => void; errorMessage?: string | (paramName: string, data: string) => string}} validationOptions
    */
@@ -34,6 +35,7 @@ class ParameterValidation {
 
 class ParseIntParameterValidation {
   /**
+   * A middleware ensures that all parameters are number
    * @param {string[]} paramNames
    * @param {(context: {data: string; paramName: string, res: any}) => void} errorHandler
    */
@@ -47,11 +49,10 @@ class ParseIntParameterValidation {
     })
   }
 }
-/**
- * Check whether
- */
+
 class EnumParameterValidation {
   /**
+   * Check a parameter is in `values` array
    * @param {string} paramName
    * @param {string[]} values
    * @param {(context: {data: string; paramName: string, res: any}) => void} errorHandler

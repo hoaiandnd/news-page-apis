@@ -10,4 +10,6 @@ const databaseEnv = {
 
 const appPort = process.env.APP_PORT || 3000
 
-module.exports = { databaseEnv, appPort }
+const nodeEnv = process.env.NODE_ENV || 'production'
+
+module.exports = { databaseEnv, appPort, nodeEnv }
