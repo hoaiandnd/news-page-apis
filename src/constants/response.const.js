@@ -6,6 +6,7 @@ const message = {
   fail: {
     requiredParamsMissing: 'REQUIRED_PARAMS_MISSING',
     invalidParamType: 'INVALID_PARAM_TYPE',
+    parameterError: 'PARAM_ERROR',
     badRequest: 'BAD_REQUEST',
     notFound: 'NOT_FOUND',
     internalServerError: 'INTERNAL_SERVER_ERROR',
