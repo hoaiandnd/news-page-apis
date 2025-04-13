@@ -19,10 +19,9 @@ class PaginationResultModel extends ResultModel {
   /**
    * @param {{sql: string; params?: any[]; limit?: string | number; offset?: string | number}} paginationSqlOptions
    */
-  async paginationQueryResult(paginationSqlOptions) {
+  paginationQueryResult(paginationSqlOptions) {
     const pSql = PaginationResultModel.paginationSql(paginationSqlOptions)
-    const [result] = await this.executeResult(pSql)
-    return result
+    return this.executeResult(pSql)
   }
 }
 
