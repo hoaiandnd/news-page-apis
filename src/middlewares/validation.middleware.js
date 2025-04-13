@@ -1,25 +1,31 @@
 const { message } = require('../constants/response.const')
 const { isNumber } = require('../utils/validation.util')
 
-class ParameterValidation {
+class Validation {
   /**
    * Custom middleware function for validation
    * @param {string[]} paramNames
-   * @param {{validationFn?: (data: string) => boolean; errorFn?: (context: {data: string; paramName: string, res: any}) => void; errorMessage?: string | (paramName: string, data: string) => string}} validationOptions
+   * @param {{validationFn?: (data: string) => boolean; errorFn?: (context: {data: string; paramName: string, res: any}) => void; errorMessage?: string | (paramName: string, data: string) => string; requestSource: 'params' | 'query' | 'body'; isRequired: boolean; allowEmpty: boolean}} validationOptions
    */
   static validate(paramNames, validationOptions) {
-    /**
-     * @param {function} next
-     */
-    const { validationFn = () => false, errorFn, errorMessage } = validationOptions
+    const {
+      validationFn = () => false,
+      requestSource = 'params',
+      errorFn,
+      errorMessage,
+      isRequired = true,
+      allowEmpty = false
+    } = validationOptions
     return function (req, res, next) {
       // find the first invalid route parameter
       const invalidParamName = paramNames.find(paramName => {
-        const data = req.params?.[paramName]
+        const data = req?.[requestSource]?.[paramName]
+        if ((data === undefined || data === null) && isRequired) return false
+        if (data.trim().length() === 0 && !allowEmpty) return false
         return !validationFn?.(data)
       })
       if (invalidParamName) {
-        const data = req.params[invalidParamName]
+        const data = req?.[requestSource]?.[invalidParamName]
         let errorMsg = message.fail.parameterError
         if (errorMessage) {
           errorMsg = typeof errorMessage === 'string' ? errorMessage : errorMessage(invalidParamName, data)
@@ -33,7 +39,7 @@ class ParameterValidation {
   }
 }
 
-class ParseIntParameterValidation {
+class ParseIntValidation {
   /**
    * A middleware ensures that all parameters are number
    * @param {string[]} paramNames
@@ -43,14 +49,14 @@ class ParseIntParameterValidation {
     const defaultErrorHandler = ({ data, paramName, res }) => {
       res.status(500).json({ message: `'${data}' is not a integer number`, paramName, data })
     }
-    return ParameterValidation.validate(paramNames, {
+    return Validation.validate(paramNames, {
       validationFn: isNumber,
       errorFn: errorHandler ?? defaultErrorHandler
     })
   }
 }
 
-class EnumParameterValidation {
+class EnumValidation {
   /**
    * Check a parameter is in `values` array
    * @param {string} paramName
@@ -61,11 +67,15 @@ class EnumParameterValidation {
     const defaultErrorHandler = ({ data, paramName, res }) => {
       res.status(500).json({ message: `'${data}' is not a valid value`, paramName, data })
     }
-    return ParameterValidation.validate(paramName, {
+    return Validation.validate(paramName, {
       validationFn: data => values.includes(data),
       errorFn: errorHandler ?? defaultErrorHandler
     })
   }
 }
 
-module.exports = { ParameterValidation, ParseIntParameterValidation, EnumParameterValidation }
+module.exports = {
+  Validation,
+  ParseIntValidation,
+  EnumValidation
+}

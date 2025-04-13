@@ -3,9 +3,7 @@ const { message } = require('../constants/response.const')
 class NewsController {
   // GET /news
   async getNewsList({ req, res, service }) {
-    const query = req.query
-    // console.log(req.query.limit)
-    const news = await service.getNewsList({ limit: query.limit, offset: query.offset })
+    const news = await service.getNewsList({ ...req.query })
     res.ok({
       message: message.success.fetch,
       data: news
@@ -19,7 +17,7 @@ class NewsController {
         message: message.fail.requiredParamsMissing
       })
     }
-    const foundNews = await service.getNewById(id)
+    const foundNews = await service.getNewsById(id)
     res.ok({
       message: message.success.fetch,
       data: foundNews

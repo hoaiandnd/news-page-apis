@@ -1,6 +1,6 @@
-const ResultModel = require('./providers/ResultModel')
+const PaginationResultModel = require('./providers/PaginationResultModel')
 
-class NewsModel extends ResultModel {
+class NewsModel extends PaginationResultModel {
   constructor() {
     super()
     this.connect()
@@ -10,15 +10,13 @@ class NewsModel extends ResultModel {
    * @param {{limit?: number | string; offset?: number | string}} paginationOptions
    * @returns
    */
-  getNewsList({ limit = 0, offset }) {
-    const newsSelectSql = 'SELECT * FROM users'
-    const paginationSql = +limit > 0 ? `${newsSelectSql} LIMIT ? OFFSET ?` : newsSelectSql
-    return this.executeResult({ sql: paginationSql, params: [limit + '', offset + '' || '0'] })
+  getNewsList(paginationOptions) {
+    return this.paginationQueryResult({ sql: 'SELECT * FROM users', ...paginationOptions })
   }
   /**
    * @param {string | number} id
    */
-  getNewById(id) {
+  getNewsById(id) {
     return this.executeOne({
       sql: 'SELECT * FROM users WHERE id = ?',
       params: [id]
