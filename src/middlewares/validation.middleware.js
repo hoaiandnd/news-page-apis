@@ -47,13 +47,20 @@ class Validation {
   }
 }
 
-class ParseIntValidation {
+class DefaultValidationErrorHandler {
   /**
-     * @param {{data: any; paramName: string; res: any}} errorContext 
-     */
-  static #defaultErrorHandler({ data, paramName, res }) {
-    res.status(500).json({ message: `'${data}' is not a integer number`, paramName, data })
+   * @param {string | (handlerInfo: {paramName: string, data: any}) => string} message
+   * @returns {{(errorContext: {data: any; paramName: string; res: any}) => void}}
+   */
+  static fromMessage(message) {
+    return ({ res, ...handlerInfo }) => {
+      const msg = typeof message === 'string' ? message : message(handlerInfo)
+      res.status(500).json({ message: msg, ...handlerInfo })
+    }
   }
+}
+
+class ParseIntValidation {
   /**
    * A middleware ensures that all parameters are number
    * @param {string[]} paramNames
@@ -62,7 +69,7 @@ class ParseIntValidation {
   static validate(paramNames, errorHandler) {
     return Validation.validate(paramNames, {
       validationFn: isNumber,
-      errorFn: errorHandler ?? ParseIntValidation.#defaultErrorHandler
+      errorFn: errorHandler ?? DefaultValidationErrorHandler.fromMessage(({data}) => `'${data}' is not a integer number`)
     })
   }
 }
@@ -75,12 +82,9 @@ class EnumValidation {
    * @param {(context: {data: string; paramName: string, res: any}) => void} errorHandler
    */
   static validate(paramName, values, errorHandler) {
-    const defaultErrorHandler = ({ data, paramName, res }) => {
-      res.status(500).json({ message: `'${data}' is not a valid value`, paramName, data })
-    }
     return Validation.validate(paramName, {
       validationFn: data => values.includes(data),
-      errorFn: errorHandler ?? defaultErrorHandler
+      errorFn: errorHandler ?? DefaultValidationErrorHandler.fromMessage(({data}) => `'${data}' is not a valid value`)
     })
   }
 }
