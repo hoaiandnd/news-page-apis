@@ -16,7 +16,8 @@ export default defineConfig([
       'no-extra-semi': 'warn',
       'no-irregular-whitespace': 'warn',
       'no-multi-spaces': 'warn',
-      'no-undef': 'warn'
+      'no-undef': 'warn',
+      'no-unused-private-class-members': 'warn'
     }
   }
 ])

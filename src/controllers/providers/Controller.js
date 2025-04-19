@@ -4,6 +4,11 @@ class Controller {
   constructor(controller) {
     this.controller = controller
   }
+  /**
+   * Inject utilties methods to response object
+   * @param {any} res 
+   * @returns 
+   */
   static extendedResponseMethods(res) {
     /**
      * @param {{ message?: string; data?: any; status?: number }} json

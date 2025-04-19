@@ -3,34 +3,42 @@ const { isNumber } = require('../utils/validation.util')
 
 class Validation {
   /**
+   * Find the fist invalid parameter name
+   * @param {*} req 
+   * @param {string[]} paramNames 
+   * @param {{validationFn?: (data: string) => boolean; requestSource: 'params' | 'query' | 'body'; isRequired: boolean; allowEmpty: boolean}} validationOptions
+   * @returns
+   */
+  static #findFirstInvalidParamName(req, paramNames, {requestSource, isRequired, allowEmpty, validationFn}) {
+    return paramNames.find(paramName => {
+      let data = req?.[requestSource]?.[paramName]
+      data ??= false // check if `data` is nullish
+      if (!data && isRequired) return false
+      if (data.trim().length() === 0 && !allowEmpty) return false
+      return !validationFn?.(data)
+    })
+  }
+  /**
    * Custom middleware function for validation
-   * @param {string[]} paramNames
-   * @param {{validationFn?: (data: string) => boolean; errorFn?: (context: {data: string; paramName: string, res: any}) => void; errorMessage?: string | (paramName: string, data: string) => string; requestSource: 'params' | 'query' | 'body'; isRequired: boolean; allowEmpty: boolean}} validationOptions
+   * @param {string[]} paramNames Parameter names that need to be validated
+   * @param {{validationFn?: (data: string) => boolean; errorFn?: (errorContext: {data: string; paramName: string, res: any}) => void; errorMessage?: string | (paramName: string, data: string) => string; requestSource: 'params' | 'query' | 'body'; isRequired: boolean; allowEmpty: boolean}} validationOptions
    */
   static validate(paramNames, validationOptions) {
     const {
-      validationFn = () => false,
-      requestSource = 'params',
       errorFn,
       errorMessage,
-      isRequired = true,
-      allowEmpty = false
+      requestSource = 'params'
     } = validationOptions
     return function (req, res, next) {
-      // find the first invalid route parameter
-      const invalidParamName = paramNames.find(paramName => {
-        const data = req?.[requestSource]?.[paramName]
-        if ((data === undefined || data === null) && isRequired) return false
-        if (data.trim().length() === 0 && !allowEmpty) return false
-        return !validationFn?.(data)
-      })
+      const invalidParamName = Validation.#findFirstInvalidParamName(req, paramNames, validationOptions)
+      // find the first invalid param value with name
       if (invalidParamName) {
         const data = req?.[requestSource]?.[invalidParamName]
         let errorMsg = message.fail.parameterError
         if (errorMessage) {
           errorMsg = typeof errorMessage === 'string' ? errorMessage : errorMessage(invalidParamName, data)
         }
-        errorFn?.({ data, invalidParamName, res }) ??
+        errorFn?.({ data, paramName: invalidParamName, res }) ??
           res.status(500).json({ message: errorMsg, paramName: invalidParamName, data })
         return
       }
@@ -41,17 +49,20 @@ class Validation {
 
 class ParseIntValidation {
   /**
+     * @param {{data: any; paramName: string; res: any}} errorContext 
+     */
+  static #defaultErrorHandler({ data, paramName, res }) {
+    res.status(500).json({ message: `'${data}' is not a integer number`, paramName, data })
+  }
+  /**
    * A middleware ensures that all parameters are number
    * @param {string[]} paramNames
-   * @param {(context: {data: string; paramName: string, res: any}) => void} errorHandler
+   * @param {(errorContext: {data: string; paramName: string, res: any}) => void} errorHandler
    */
   static validate(paramNames, errorHandler) {
-    const defaultErrorHandler = ({ data, paramName, res }) => {
-      res.status(500).json({ message: `'${data}' is not a integer number`, paramName, data })
-    }
     return Validation.validate(paramNames, {
       validationFn: isNumber,
-      errorFn: errorHandler ?? defaultErrorHandler
+      errorFn: errorHandler ?? ParseIntValidation.#defaultErrorHandler
     })
   }
 }
