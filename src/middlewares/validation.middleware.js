@@ -4,17 +4,26 @@ const { isNumber } = require('../utils/validation.util')
 class Validation {
   /**
    * Find the fist invalid parameter name
-   * @param {*} req 
-   * @param {string[]} paramNames 
+   * @param {*} req
+   * @param {string[]} paramNames
    * @param {{validationFn?: (data: string) => boolean; requestSource: 'params' | 'query' | 'body'; isRequired: boolean; allowEmpty: boolean}} validationOptions
    * @returns
    */
-  static #findFirstInvalidParamName(req, paramNames, {requestSource, isRequired, allowEmpty, validationFn}) {
+  static #findFirstInvalidParamName(
+    req,
+    paramNames,
+    {
+      requestSource = 'params',
+      isRequired = true,
+      allowEmpty = false,
+      validationFn = () => false
+    }
+  ) {
     return paramNames.find(paramName => {
       let data = req?.[requestSource]?.[paramName]
       data ??= false // check if `data` is nullish
       if (!data && isRequired) return false
-      if (data.trim().length() === 0 && !allowEmpty) return false
+      if (data.trim().length === 0 && !allowEmpty) return false
       return !validationFn?.(data)
     })
   }
@@ -30,16 +39,25 @@ class Validation {
       requestSource = 'params'
     } = validationOptions
     return function (req, res, next) {
-      const invalidParamName = Validation.#findFirstInvalidParamName(req, paramNames, validationOptions)
+      const invalidParamName = Validation.#findFirstInvalidParamName(
+        req,
+        paramNames,
+        validationOptions
+      )
       // find the first invalid param value with name
       if (invalidParamName) {
         const data = req?.[requestSource]?.[invalidParamName]
         let errorMsg = message.fail.parameterError
         if (errorMessage) {
-          errorMsg = typeof errorMessage === 'string' ? errorMessage : errorMessage(invalidParamName, data)
+          errorMsg =
+            typeof errorMessage === 'string'
+              ? errorMessage
+              : errorMessage(invalidParamName, data)
         }
         errorFn?.({ data, paramName: invalidParamName, res }) ??
-          res.status(500).json({ message: errorMsg, paramName: invalidParamName, data })
+          res
+            .status(500)
+            .json({ message: errorMsg, paramName: invalidParamName, data })
         return
       }
       next()
@@ -69,7 +87,11 @@ class ParseIntValidation {
   static validate(paramNames, errorHandler) {
     return Validation.validate(paramNames, {
       validationFn: isNumber,
-      errorFn: errorHandler ?? DefaultValidationErrorHandler.fromMessage(({data}) => `'${data}' is not a integer number`)
+      errorFn:
+        errorHandler ??
+        DefaultValidationErrorHandler.fromMessage(
+          ({ data }) => `'${data}' is not a integer number`
+        )
     })
   }
 }
@@ -84,7 +106,11 @@ class EnumValidation {
   static validate(paramName, values, errorHandler) {
     return Validation.validate(paramName, {
       validationFn: data => values.includes(data),
-      errorFn: errorHandler ?? DefaultValidationErrorHandler.fromMessage(({data}) => `'${data}' is not a valid value`)
+      errorFn:
+        errorHandler ??
+        DefaultValidationErrorHandler.fromMessage(
+          ({ data }) => `'${data}' is not a valid value`
+        )
     })
   }
 }

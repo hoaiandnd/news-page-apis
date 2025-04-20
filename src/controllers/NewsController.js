@@ -1,8 +1,9 @@
 const { message } = require('../constants/response.const')
 
 class NewsController {
-  // GET /news
+  // GET /news?limit=x&offset=y
   async getNewsList({ req, res, service }) {
+    
     const news = await service.getNewsList({ ...req.query })
     res.ok({
       message: message.success.fetch,

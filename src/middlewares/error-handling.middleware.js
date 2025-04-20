@@ -1,11 +1,13 @@
 const { nodeEnv } = require('../utils/env.util')
 
 module.exports = (err, _req, res, _next) => {
+  console.log('\n\nError occured!!', err)
   const env = nodeEnv
-  res.status(500)
-  if (env === 'production') {
-    res.json({ message: 'Something went wrong!' })
-  } else {
-    res.json({ message: err.message })
-  }
+  res
+    .status(500)
+    .json(
+      env === 'production'
+        ? { message: 'Something went wrong!' }
+        : { message: err.message }
+    )
 }

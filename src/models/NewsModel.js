@@ -6,19 +6,18 @@ class NewsModel extends PaginationResultModel {
     this.connect()
   }
   /**
-   *
    * @param {{limit?: number | string; offset?: number | string}} paginationOptions
    * @returns
    */
   getNewsList(paginationOptions) {
-    return this.paginationQueryResult({ sql: 'SELECT * FROM users', ...paginationOptions })
+    return this.paginationQueryResult({ sql: 'SELECT * FROM news', ...paginationOptions })
   }
   /**
    * @param {string | number} id
    */
   getNewsById(id) {
     return this.executeOne({
-      sql: 'SELECT * FROM users WHERE id = ?',
+      sql: 'SELECT * FROM news WHERE id = ?',
       params: [id]
     })
   }

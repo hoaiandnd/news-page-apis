@@ -1,8 +1,8 @@
 const Controller = require('./Controller')
 
 class InjectableController extends Controller {
-  constructor(controller, service) {
-    super(controller)
+  constructor({ controllerType, service }) {
+    super({ controllerType })
     this.service = service
   }
   fromAction(actionName, service) {
